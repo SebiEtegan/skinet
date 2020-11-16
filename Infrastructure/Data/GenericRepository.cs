@@ -8,12 +8,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
-    public class GenericRepository<T> : IGenericReopsitory<T> where T : BaseEntity
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly StoreContext _context;
         public GenericRepository(StoreContext context)
         {
             _context = context;
+        }
+
+        public void Add(T entity)
+        {
+            _context.Set<T>().Add(entity);
+        }
+
+        public void Update(T enitiy)
+        {
+            _context.Set<T>().Attach(enitiy);
+            _context.Entry(enitiy).State = EntityState.Modified;
+        }
+
+        public void Delete(T entity)
+        {
+            _context.Set<T>().Remove(entity);
         }
 
         public async Task<int> CountAsync(ISpecification<T> spec)
